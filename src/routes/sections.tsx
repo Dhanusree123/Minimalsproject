@@ -47,6 +47,7 @@ export function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'posts', element: <BlogPage /> },
       ],
     },
     {
