@@ -1,4 +1,7 @@
-import { useState, useCallback } from 'react';
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+/* eslint-disable perfectionist/sort-named-imports */
+/* eslint-disable perfectionist/sort-imports */
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -23,21 +26,80 @@ import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 import type { UserProps } from '../user-table-row';
+import { FormDialogPop } from '../form-dialog';
+import { FormData } from '../types/typeUser';
 
 // ----------------------------------------------------------------------
 
-export function UserView() {
+type User = FormData & {
+  id: string;
+  status: string;
+  isVerified: boolean;
+  avatarUrl: string;
+};
+
+const UserView = () => {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const [open, setOpen] = useState(false);
+  const [users, setUsers] = useState<User[]>(() => {
+    const stored = JSON.parse(localStorage.getItem('users') || '[]');
+    return stored.length ? stored : _users;
+  });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = (data: FormData) => {
+    const newUser: User = {
+      ...data,
+      id: new Date().getTime().toString(),
+      status: 'Active',
+      isVerified: true,
+      avatarUrl: 'https://via.placeholder.com/150',
+    };
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    setOpen(false);
+  };
+
+  const fields: { name: keyof FormData; label: string }[] = [
+    {
+      name: 'name',
+      label: 'Name',
+    },
+    {
+      name: 'company',
+      label: 'Company',
+    },
+    {
+      name: 'role',
+      label: 'Role',
+    },
+  ];
 
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData: users,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
 
   const notFound = !dataFiltered.length && !!filterName;
+
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    if (!storedUsers.length) {
+      localStorage.setItem('users', JSON.stringify(_users));
+      setUsers(users);
+    }
+  }, [users]);
 
   return (
     <DashboardContent>
@@ -49,9 +111,11 @@ export function UserView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleClickOpen}
         >
           New user
         </Button>
+        <FormDialogPop open={open} onClose={handleClose} fields={fields} onSubmit={handleSubmit} />
       </Box>
 
       <Card>
@@ -70,13 +134,13 @@ export function UserView() {
               <UserTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={users.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    users.map((user) => user.id)
                   )
                 }
                 headLabel={[
@@ -105,7 +169,7 @@ export function UserView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, users.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -117,7 +181,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={users.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -126,8 +190,9 @@ export function UserView() {
       </Card>
     </DashboardContent>
   );
-}
+};
 
+export default UserView;
 // ----------------------------------------------------------------------
 
 export function useTable() {

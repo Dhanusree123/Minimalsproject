@@ -14,10 +14,6 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 
-import { PostItem } from '../post-item';
-import { PostSort } from '../post-sort';
-import { PostSearch } from '../post-search';
-
 // ----------------------------------------------------------------------
 
 const fields = [
@@ -64,8 +60,8 @@ export function BlogView() {
       </Box>
 
       <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 5 }}>
-        <PostSearch posts={_posts} />
-        <PostSort
+        {/* <PostSearch posts={_posts} /> */}
+        {/* <PostSort
           sortBy={sortBy}
           onSort={handleSort}
           options={[
@@ -73,7 +69,7 @@ export function BlogView() {
             { value: 'popular', label: 'Popular' },
             { value: 'oldest', label: 'Oldest' },
           ]}
-        />
+        /> */}
       </Box>
 
       <Grid container spacing={3}>
@@ -83,7 +79,7 @@ export function BlogView() {
 
           return (
             <Grid key={post.id} xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-              <PostItem post={post} latestPost={latestPost} latestPostLarge={latestPostLarge} />
+              {/* <PostItem post={post} latestPost={latestPost} latestPostLarge={latestPostLarge} /> */}
             </Grid>
           );
         })}

@@ -1,3 +1,4 @@
+// export const LoginView = () => {};
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -15,7 +16,7 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export function SignInView() {
+export function LogInView() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -34,10 +35,6 @@ export function SignInView() {
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
-
-      <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
-        Forgot password?
-      </Link>
 
       <TextField
         fullWidth
@@ -66,7 +63,7 @@ export function SignInView() {
         variant="contained"
         onClick={handleSignIn}
       >
-        Sign in
+        Sign
       </LoadingButton>
     </Box>
   );
@@ -77,7 +74,7 @@ export function SignInView() {
         <Typography variant="h5">Sign in</Typography>
         <Typography variant="body2" color="text.secondary">
           Don’t have an account?
-          <Link variant="subtitle2" sx={{ ml: 0.5 }} href="/login">
+          <Link variant="subtitle2" sx={{ ml: 0.5 }} href="">
             Get started
           </Link>
         </Typography>
